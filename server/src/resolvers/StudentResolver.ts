@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { Query, Resolver, Mutation, Arg } from 'type-graphql';
 import { StudentModel } from '../Student/StudentModel';
-import { StudentSchema as Student } from '../Student/StudentSchema';
+import { Student } from '../Student/StudentSchema';
 import { StudentDTO } from '../Student/StudentDTO';
 import { ObjectIdScalar } from '../object-id.scalar';
 

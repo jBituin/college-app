@@ -2,7 +2,7 @@ import { prop as Property } from '@typegoose/typegoose';
 import { Field, ObjectType, ID } from 'type-graphql';
 
 @ObjectType()
-export class StudentSchema {
+export class Student {
   @Field(() => ID)
   readonly id: string;
 
