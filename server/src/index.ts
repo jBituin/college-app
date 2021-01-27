@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 
 import { UserResolver } from './resolvers/UserResolver';
 import { CollegeResolver } from './resolvers/CollegeResolver';
+import { StudentResolver } from './resolvers/StudentResolver';
 
 (async () => {
   const app = express();
@@ -27,7 +28,7 @@ import { CollegeResolver } from './resolvers/CollegeResolver';
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, CollegeResolver],
+      resolvers: [UserResolver, CollegeResolver, StudentResolver],
     }),
     context: ({ req, res }) => ({ req, res }),
   });
