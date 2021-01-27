@@ -1,0 +1,11 @@
+type College {
+  """
+  College ID.
+  """
+  id: ID!
+
+  """
+  College's name.
+  """
+  name: String!
+}

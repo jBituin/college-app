@@ -1,18 +1,19 @@
-import express from 'express';
 import 'reflect-metadata';
+import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import cors from 'cors';
 import { json } from 'body-parser';
 import mongoose from 'mongoose';
 
-import { UserResolver } from './schema/resolvers/UserResolver';
+import { UserResolver } from './resolvers/UserResolver';
+import { CollegeResolver } from './resolvers/CollegeResolver';
 
 (async () => {
   const app = express();
   app.use(json());
 
-  mongoose.connect(
+  await mongoose.connect(
     'mongodb://localhost:27017/college',
     {
       useCreateIndex: true,
@@ -26,14 +27,14 @@ import { UserResolver } from './schema/resolvers/UserResolver';
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver],
+      resolvers: [UserResolver, CollegeResolver],
     }),
     context: ({ req, res }) => ({ req, res }),
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
 
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 4000;
   app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
