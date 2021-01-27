@@ -1,4 +1,4 @@
 import { getModelForClass } from '@typegoose/typegoose';
-import { CollegeSchema } from './CollegeSchema';
+import { College } from './CollegeSchema';
 
-export const CollegeModel = getModelForClass(CollegeSchema);
+export const CollegeModel = getModelForClass(College);
