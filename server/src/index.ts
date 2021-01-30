@@ -11,6 +11,8 @@ import { UserModel } from './User/UserModel';
 import { UserResolver } from './resolvers/UserResolver';
 import { CollegeResolver } from './resolvers/CollegeResolver';
 import { StudentResolver } from './resolvers/StudentResolver';
+import { BranchResolver } from './resolvers/BranchResolver';
+
 import { REFRESH_TOKEN_SECRET } from './env.variables';
 import { verify } from 'jsonwebtoken';
 import {
@@ -67,7 +69,7 @@ import {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, CollegeResolver, StudentResolver],
+      resolvers: [UserResolver, CollegeResolver, StudentResolver, BranchResolver],
     }),
     context: ({ req, res }) => ({ req, res }),
   });

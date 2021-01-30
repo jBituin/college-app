@@ -5,6 +5,7 @@ import { Branch } from '../Branch/BranchSchema';
 import { BranchDTO } from '../Branch/BranchDTO';
 import { ObjectIdScalar } from '../object-id.scalar';
 import { isAuth } from '../auth';
+import { AssignStudentDTO } from '../Branch/AssignStudentDTO';
 
 @Resolver(() => Branch)
 export class BranchResolver {
@@ -23,8 +24,12 @@ export class BranchResolver {
 
   @Mutation(() => Branch)
   @UseMiddleware(isAuth)
-  async createBranch(@Arg('branch') branchDTO: BranchDTO): Promise<Branch> {
-    const branch = await BranchModel.create(branchDTO);
+  async createBranch(@Arg('branch') branchDTO: BranchDTO, @Arg('collegeId') collegeId: string): Promise<Branch> {
+    const branch = await BranchModel.create({
+      ...branchDTO,
+      collegeId,
+      students: []
+    });
     await branch.save();
     return branch;
   }
@@ -49,5 +54,23 @@ export class BranchResolver {
   ) {
     const deletedBranch = await BranchModel.findByIdAndDelete(branchId);
     return deletedBranch;
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async assignStudent(
+    @Arg('assignStudent') assignStudentDTO: AssignStudentDTO
+
+  ) {
+    const { branchId, studentId } = assignStudentDTO;
+    await BranchModel.update({
+      _id: new ObjectId(branchId),
+    }, {
+        $push: {
+          students: studentId
+        }
+      });
+
+    return true;
   }
 }

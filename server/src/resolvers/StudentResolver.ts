@@ -28,8 +28,7 @@ export class StudentResolver {
   ): Promise<Student> {
     const student = await StudentModel.create({
       ...studentDTO,
-      collegeId,
-      branches: []
+      collegeId
     });
     await student.save();
     return student;
