@@ -9,4 +9,8 @@ export class College {
   @Field()
   @Property({ required: true })
   name: string;
+
+  @Field(() => ID)
+  @Property({ required: true })
+  createdBy: string;
 }

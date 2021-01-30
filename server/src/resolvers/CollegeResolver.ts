@@ -1,10 +1,18 @@
 import { ObjectId } from 'mongodb';
-import { Query, Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
+import {
+  Query,
+  Resolver,
+  Mutation,
+  Arg,
+  UseMiddleware,
+  Ctx,
+} from 'type-graphql';
 import { CollegeModel } from '../College/CollegeModel';
 import { College } from '../College/CollegeSchema';
 import { CollegeDTO } from '../College/CollegeDTO';
 import { ObjectIdScalar } from '../object-id.scalar';
 import { isAuth } from '../auth';
+import { MyContext } from 'src/MyContext';
 
 @Resolver(() => College)
 export class CollegeResolver {
@@ -24,9 +32,13 @@ export class CollegeResolver {
   @Mutation(() => College)
   @UseMiddleware(isAuth)
   async createCollege(
-    @Arg('college') collegeDTO: CollegeDTO
+    @Arg('college') collegeDTO: CollegeDTO,
+    @Ctx() { payload }: MyContext
   ): Promise<College> {
-    const college = await CollegeModel.create(collegeDTO);
+    const college = await CollegeModel.create({
+      ...collegeDTO,
+      createdBy: payload!.userId,
+    });
     await college.save();
     return college;
   }

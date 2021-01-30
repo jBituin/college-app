@@ -1,6 +1,5 @@
 import { prop as Property } from '@typegoose/typegoose';
 import { Field, ObjectType, ID } from 'type-graphql';
-
 @ObjectType()
 export class Branch {
   @Field(() => ID)
@@ -9,4 +8,8 @@ export class Branch {
   @Field()
   @Property({ required: true })
   name: string;
+
+  @Field(() => ID)
+  @Property({ required: true })
+  collegeId: string;
 }
