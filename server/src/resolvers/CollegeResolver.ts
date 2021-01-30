@@ -1,27 +1,28 @@
 import { ObjectId } from 'mongodb';
-import { Query, Resolver, Mutation, Arg } from 'type-graphql';
+import { Query, Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
 import { CollegeModel } from '../College/CollegeModel';
 import { College } from '../College/CollegeSchema';
 import { CollegeDTO } from '../College/CollegeDTO';
 import { ObjectIdScalar } from '../object-id.scalar';
+import { isAuth } from '../auth';
 
 @Resolver(() => College)
 export class CollegeResolver {
   @Query(() => [College], { nullable: true })
-  // todo: auth middleware
+  @UseMiddleware(isAuth)
   // todo: paginate colleges
   async colleges(): Promise<College[]> {
     return await CollegeModel.find({});
   }
 
   @Query(() => College, { nullable: true })
-  // todo: auth middleware
+  @UseMiddleware(isAuth)
   async college(@Arg('collegeId', () => ObjectIdScalar) collegeId: ObjectId) {
     return await CollegeModel.findOne(collegeId);
   }
 
   @Mutation(() => College)
-  // todo: auth middleware
+  @UseMiddleware(isAuth)
   async createCollege(
     @Arg('college') collegeDTO: CollegeDTO
   ): Promise<College> {
@@ -31,7 +32,7 @@ export class CollegeResolver {
   }
 
   @Mutation(() => College)
-  // todo: auth middleware
+  @UseMiddleware(isAuth)
   async updateCollege(
     @Arg('collegeId', () => ObjectIdScalar) collegeId: ObjectId,
     @Arg('college') collegeDTO: CollegeDTO
@@ -48,7 +49,7 @@ export class CollegeResolver {
   }
 
   @Mutation(() => College)
-  // todo: auth middleware
+  @UseMiddleware(isAuth)
   async deleteCollege(
     @Arg('collegeId', () => ObjectIdScalar) collegeId: ObjectId
   ) {

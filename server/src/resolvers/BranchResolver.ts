@@ -1,27 +1,28 @@
 import { ObjectId } from 'mongodb';
-import { Query, Resolver, Mutation, Arg } from 'type-graphql';
+import { Query, Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
 import { BranchModel } from '../Branch/BranchModel';
 import { Branch } from '../Branch/BranchSchema';
 import { BranchDTO } from '../Branch/BranchDTO';
 import { ObjectIdScalar } from '../object-id.scalar';
+import { isAuth } from '../auth';
 
 @Resolver(() => Branch)
 export class BranchResolver {
   @Query(() => [Branch], { nullable: true })
-  // todo: auth middleware
+  @UseMiddleware(isAuth)
   // todo: paginate branches
   async branches(): Promise<Branch[]> {
     return await BranchModel.find({});
   }
 
   @Query(() => Branch, { nullable: true })
-  // todo: auth middleware
+  @UseMiddleware(isAuth)
   async branch(@Arg('branchId', () => ObjectIdScalar) branchId: ObjectId) {
     return await BranchModel.findOne(branchId);
   }
 
   @Mutation(() => Branch)
-  // todo: auth middleware
+  @UseMiddleware(isAuth)
   async createBranch(@Arg('branch') branchDTO: BranchDTO): Promise<Branch> {
     const branch = await BranchModel.create(branchDTO);
     await branch.save();
@@ -29,7 +30,7 @@ export class BranchResolver {
   }
 
   @Mutation(() => Branch)
-  // todo: auth middleware
+  @UseMiddleware(isAuth)
   async updateBranch(
     @Arg('branchId', () => ObjectIdScalar) branchId: ObjectId,
     @Arg('branch') branchDTO: BranchDTO
@@ -42,7 +43,7 @@ export class BranchResolver {
   }
 
   @Mutation(() => Branch)
-  // todo: auth middleware
+  @UseMiddleware(isAuth)
   async deleteBranch(
     @Arg('branchId', () => ObjectIdScalar) branchId: ObjectId
   ) {
