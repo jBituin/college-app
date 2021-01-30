@@ -45,7 +45,6 @@ export class UserResolver {
   @Query(() => String)
   @UseMiddleware(isAuth)
   myInfo(@Ctx() { payload }: MyContext) {
-    console.log('payload', payload);
     return `Your user id is: ${payload!.userId}`;
   }
 
@@ -104,11 +103,9 @@ export class UserResolver {
       tokenVersion: 1,
     };
 
-    console.log('userDetails', userDetails);
     try {
       const user = await UserModel.create(userDetails);
       await user.save();
-      console.log('user', user);
     } catch (err) {
       console.log(err);
       return false;
