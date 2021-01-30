@@ -1,7 +1,5 @@
 import { prop as Property } from '@typegoose/typegoose';
 import { Field, ObjectType, ID } from 'type-graphql';
-// import { User } from '../User/UserSchema';
-
 
 @ObjectType()
 export class College {

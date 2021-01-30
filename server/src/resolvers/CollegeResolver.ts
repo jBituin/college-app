@@ -17,7 +17,7 @@ import { MyContext } from 'src/MyContext';
 @Resolver(() => College)
 export class CollegeResolver {
   @Query(() => [College], { nullable: true })
-  // @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth)
   // todo: paginate colleges
   async colleges(): Promise<College[]> {
     return await CollegeModel.find({});

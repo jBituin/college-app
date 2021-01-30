@@ -8,7 +8,7 @@ import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from './env.variables';
 
 export const createAccessToken = (user: User) => {
   return sign({ userId: user.id }, ACCESS_TOKEN_SECRET!, {
-    expiresIn: '7d',
+    expiresIn: '15m',
   });
 };
 
