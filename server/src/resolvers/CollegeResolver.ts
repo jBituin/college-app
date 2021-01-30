@@ -35,12 +35,10 @@ export class CollegeResolver {
     @Arg('college') collegeDTO: CollegeDTO,
     @Ctx() { payload }: MyContext
   ): Promise<College> {
-    collegeDTO = {
+    const college = await CollegeModel.create({
       ...collegeDTO,
       createdBy: payload!.userId,
-    };
-    console.log('collegeDTO', collegeDTO);
-    const college = await CollegeModel.create(collegeDTO);
+    });
     await college.save();
     return college;
   }

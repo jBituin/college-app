@@ -1,6 +1,7 @@
-import { prop as Property } from '@typegoose/typegoose';
+import { prop as Property, Prop } from '@typegoose/typegoose';
 import { Field, ObjectType, ID } from 'type-graphql';
-
+import { College } from '../College/CollegeSchema';
+import { Ref } from '../types';
 @ObjectType()
 export class Branch {
   @Field(() => ID)
@@ -9,4 +10,8 @@ export class Branch {
   @Field()
   @Property({ required: true })
   name: string;
+
+  @Field(() => College)
+  @Prop({ ref: College, required: true })
+  collegeId: Ref<College>;
 }
