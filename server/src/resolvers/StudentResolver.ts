@@ -23,9 +23,14 @@ export class StudentResolver {
   @Mutation(() => Student)
   @UseMiddleware(isAuth)
   async createStudent(
-    @Arg('student') studentDTO: StudentDTO
+    @Arg('student') studentDTO: StudentDTO,
+    @Arg('collegeId') collegeId: string
   ): Promise<Student> {
-    const student = await StudentModel.create(studentDTO);
+    const student = await StudentModel.create({
+      ...studentDTO,
+      collegeId,
+      branches: []
+    });
     await student.save();
     return student;
   }

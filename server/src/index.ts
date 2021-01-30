@@ -59,8 +59,9 @@ import {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     },
-    () => {
-      console.log('Connected to database');
+    (err) => {
+      if (err) console.log(`FATAL: ${err.message}`);
+      else console.log('Connected to database');
     }
   );
 

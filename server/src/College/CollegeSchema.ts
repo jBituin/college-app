@@ -1,7 +1,7 @@
 import { prop as Property } from '@typegoose/typegoose';
 import { Field, ObjectType, ID } from 'type-graphql';
-import { User } from '../User/UserSchema';
-import { Ref } from '../types';
+// import { User } from '../User/UserSchema';
+
 
 @ObjectType()
 export class College {
@@ -12,7 +12,7 @@ export class College {
   @Property({ required: true })
   name: string;
 
-  @Field(() => User)
-  @Property({ ref: User, required: true })
-  createdBy: Ref<User>;
+  @Field(() => ID)
+  @Property({ required: true })
+  createdBy: string;
 }
