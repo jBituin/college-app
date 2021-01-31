@@ -24,6 +24,13 @@ import {
 (async () => {
   const app = express();
   app.use(json());
+  app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    })
+  );
+
   app.use(cookieParser());
   app.post('/refresh-token', async (req, res) => {
     const token = req.cookies.refrId;
@@ -69,7 +76,12 @@ import {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, CollegeResolver, StudentResolver, BranchResolver],
+      resolvers: [
+        UserResolver,
+        CollegeResolver,
+        StudentResolver,
+        BranchResolver,
+      ],
     }),
     context: ({ req, res }) => ({ req, res }),
   });
@@ -77,7 +89,6 @@ import {
   apolloServer.applyMiddleware({ app, cors: false });
 
   const PORT = process.env.PORT || 4000;
-  app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });
