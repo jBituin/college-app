@@ -28,6 +28,7 @@ import {
     cors({
       origin: 'http://localhost:3000',
       credentials: true,
+      allowedHeaders: ['Content-Type', 'authorization'],
     })
   );
 
@@ -68,7 +69,7 @@ import {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     },
-    (err) => {
+    err => {
       if (err) console.log(`FATAL: ${err.message}`);
       else console.log('Connected to database');
     }

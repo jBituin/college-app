@@ -4,13 +4,13 @@ import { RouteComponentProps } from 'react-router-dom';
 import { setAccessToken } from '../accessToken';
 
 const Login: React.FC<RouteComponentProps> = ({ history }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('joms');
+  const [password, setPassword] = useState('joms');
   const [login] = useLoginMutation();
 
   return (
     <form
-      onSubmit={async (e) => {
+      onSubmit={async e => {
         e.preventDefault();
 
         console.log('FORM SUBMITTED');
@@ -26,6 +26,7 @@ const Login: React.FC<RouteComponentProps> = ({ history }) => {
           console.log('response', response);
           console.log('response.data', response.data);
           setAccessToken(response.data.login.accessToken);
+          history.push('/my-info');
         } else {
           console.log('errors:', response);
         }
@@ -34,9 +35,9 @@ const Login: React.FC<RouteComponentProps> = ({ history }) => {
       <div>
         <input
           value={username}
-          type='username'
-          placeholder='username'
-          onChange={(e) => {
+          type="username"
+          placeholder="username"
+          onChange={e => {
             setUsername(e.target.value);
           }}
         />
@@ -44,14 +45,14 @@ const Login: React.FC<RouteComponentProps> = ({ history }) => {
       <div>
         <input
           value={password}
-          placeholder='password'
-          type='password'
-          onChange={(e) => {
+          placeholder="password"
+          type="password"
+          onChange={e => {
             setPassword(e.target.value);
           }}
         />
       </div>
-      <button type='submit'> Login</button>
+      <button type="submit"> Login</button>
     </form>
   );
 };

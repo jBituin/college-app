@@ -1,8 +1,6 @@
 import React from 'react';
 import { useMyInfoQuery } from '../generated/graphql';
 
-interface Props {}
-
 const MyInfo: React.FC = () => {
   const { data, loading, error } = useMyInfoQuery();
 

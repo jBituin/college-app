@@ -1,20 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { InMemoryCache, ApolloClient, ApolloProvider } from '@apollo/client';
-import Routes from './Routes';
+import {
+  InMemoryCache,
+  ApolloClient,
+  ApolloProvider,
+  HttpLink,
+} from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 import { getAccessToken } from './accessToken';
+import Routes from './Routes';
 
 const getToken = () => {
   const token = getAccessToken();
+  console.log('token@getTokenAuth :', token);
   return token ? `bearer ${token}` : '';
 };
-const client = new ApolloClient({
+
+const httpLink = new HttpLink({
   uri: 'http://localhost:4000/graphql',
-  cache: new InMemoryCache(),
   credentials: 'include',
+});
+
+const headerLink = setContext((_, previousContext) => ({
   headers: {
+    ...previousContext.headers,
     authorization: getToken(),
   },
+}));
+
+const client = new ApolloClient({
+  link: headerLink.concat(httpLink),
+  cache: new InMemoryCache(),
+  credentials: 'include',
 });
 
 ReactDOM.render(
