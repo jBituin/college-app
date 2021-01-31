@@ -9,23 +9,23 @@ const Routes: React.FC = () => {
     <BrowserRouter>
       <header>
         <div>
-          <Link to='/register'>Register</Link>
+          <Link to="/register">Register</Link>
         </div>
         <div>
-          <Link to='/'>Home</Link>
+          <Link to="/">Home</Link>
         </div>
         <div>
-          <Link to='/login'>Login</Link>
+          <Link to="/login">Login</Link>
         </div>
         <div>
-          <Link to='/my-info'>My Info</Link>
+          <Link to="/my-info">My Info</Link>
         </div>
       </header>
       <Switch>
-        <Route exact path='/' component={Home}></Route>
-        <Route exact path='/register' component={Register}></Route>
-        <Route exact path='/login' component={Login}></Route>
-        <Route exact path='/my-info' component={MyInfo}></Route>
+        <Route exact path="/" component={Home}></Route>
+        <Route exact path="/register" component={Register}></Route>
+        <Route exact path="/login" component={Login}></Route>
+        <Route exact path="/my-info" component={MyInfo}></Route>
       </Switch>
     </BrowserRouter>
   );
