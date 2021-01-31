@@ -1,55 +1,46 @@
 import React, { useState } from 'react';
 import { useRegisterMutation } from '../generated/graphql';
 import { RouteComponentProps } from 'react-router-dom';
+import AuthForm from '../components/AuthForm';
 
 const Register: React.FC<RouteComponentProps> = ({ history }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [register] = useRegisterMutation();
 
+  const onChangeUsername = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setUsername(e.currentTarget.value);
+  };
+
+  const onChangePassword = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setPassword(e.currentTarget.value);
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const response = await register({
+      variables: {
+        username,
+        password,
+      },
+    });
+
+    if (response && response.data) {
+      history.push('/');
+    } else {
+      console.log('errors:', response);
+    }
+  };
+
   return (
-    <form
-      onSubmit={async (e) => {
-        e.preventDefault();
-
-        console.log('FORM SUBMITTED');
-
-        const response = await register({
-          variables: {
-            username,
-            password,
-          },
-        });
-
-        if (response && response.data?.register) {
-          history.push('/');
-        } else {
-          console.log('errors:', response.errors);
-        }
-      }}
-    >
-      <div>
-        <input
-          value={username}
-          type='username'
-          placeholder='username'
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
-        />
-      </div>
-      <div>
-        <input
-          value={password}
-          placeholder='password'
-          type='password'
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
-      </div>
-      <button type='submit'> Register</button>
-    </form>
+    <AuthForm
+      onSubmit={onSubmit}
+      onChangePassword={onChangePassword}
+      onChangeUsername={onChangeUsername}
+      headingText="Register"
+      buttonText="Sign up"
+    ></AuthForm>
   );
 };
 

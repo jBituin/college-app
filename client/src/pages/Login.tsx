@@ -2,15 +2,7 @@ import React, { useState, SyntheticEvent } from 'react';
 import { useLoginMutation } from '../generated/graphql';
 import { RouteComponentProps } from 'react-router-dom';
 import { setAccessToken } from '../accessToken';
-import {
-  Flex,
-  Box,
-  Heading,
-  FormControl,
-  FormLabel,
-  Input,
-  Button,
-} from '@chakra-ui/react';
+import AuthForm from '../components/AuthForm';
 
 const Login: React.FC<RouteComponentProps> = ({ history }) => {
   const [username, setUsername] = useState('joms');
@@ -44,45 +36,13 @@ const Login: React.FC<RouteComponentProps> = ({ history }) => {
   };
 
   return (
-    <Flex width="full" height="full" align="center" justifyContent="center">
-      <Box
-        p={8}
-        maxWidth="500px"
-        borderWidth={1}
-        borderRadius={8}
-        boxShadow="large"
-      >
-        <Box textAlign="center">
-          <Heading>Login</Heading>
-        </Box>
-        <Box my={4} textAlign="left">
-          <form onSubmit={onSubmit}>
-            <FormControl>
-              <FormLabel>Username</FormLabel>
-              <Input value={username} onChange={onChangeUsername} />
-            </FormControl>
-            <FormControl mt={6}>
-              <FormLabel>Password</FormLabel>
-              <Input
-                value={password}
-                type="password"
-                onChange={onChangePassword}
-              />
-            </FormControl>
-            <Button
-              width="full"
-              mt={4}
-              type="submit"
-              variant="outline"
-              color="teal"
-              borderColor="teal"
-            >
-              Login
-            </Button>
-          </form>
-        </Box>
-      </Box>
-    </Flex>
+    <AuthForm
+      onChangePassword={onChangePassword}
+      onChangeUsername={onChangeUsername}
+      onSubmit={onSubmit}
+      headingText="Login"
+      buttonText="Sign in"
+    ></AuthForm>
   );
 };
 
