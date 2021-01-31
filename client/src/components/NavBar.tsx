@@ -1,7 +1,15 @@
 import React from 'react';
 import NavBarContainer from './NavBarContainer';
+import Logo from './Logo';
+import MenuToggle from './MenuToggle';
+import MenuLinks from './MenuLinks';
 
-const NavBar: React.FC = props => {
+interface Props {
+  color?: string;
+  bg?: string;
+}
+
+const NavBar: React.FC<Props> = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
