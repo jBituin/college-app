@@ -23,7 +23,9 @@ const MenuLinks: React.FC<Props> = ({ isOpen }) => {
   ];
 
   const loggedInMenuItems = [
-    { text: 'Home', to: '/', isAuth: true, onClick: () => {} },
+    { text: 'Colleges', to: '/', isAuth: true, onClick: () => {} },
+    { text: 'Branches', to: '/branches', isAuth: true, onClick: () => {} },
+    { text: 'Students', to: '/students', isAuth: true, onClick: () => {} },
     { text: 'MyInfo', to: '/my-info', isAuth: true, onClick: () => {} },
     { text: 'Logout', to: '/login', isAuth: true, onClick: onLogout },
   ];
