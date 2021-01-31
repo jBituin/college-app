@@ -35,7 +35,9 @@ const AuthForm: React.FC<Props> = (props) => {
     <Flex width="full" height="full" align="center" justifyContent="center">
       <Box
         p={8}
-        maxWidth="500px"
+        minWidth="500px"
+        minHeight="500px"
+        maxHeight="500px"
         borderWidth={1}
         borderRadius={8}
         boxShadow="large"
