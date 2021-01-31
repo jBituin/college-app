@@ -1,0 +1,8 @@
+mutation CreateStudent($student: StudentDTO!, $collegeId: ObjectId!) {
+  createStudent(student: $student, collegeId: $collegeId) {
+    _id
+    firstName
+    lastName
+    collegeId
+  }
+}

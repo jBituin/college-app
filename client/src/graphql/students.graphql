@@ -1,0 +1,11 @@
+query Students {
+  students {
+    _id
+    firstName
+    lastName
+    college {
+      _id
+      name
+    }
+  }
+}
