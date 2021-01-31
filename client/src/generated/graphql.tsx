@@ -22,14 +22,21 @@ export type Query = {
   myInfo: Scalars['String'];
   colleges?: Maybe<Array<College>>;
   college?: Maybe<College>;
+  collegeStudents: Array<Student>;
   students?: Maybe<Array<Student>>;
   student?: Maybe<Student>;
   branches?: Maybe<Array<Branch>>;
   branch?: Maybe<Branch>;
+  branchStudents: Array<Student>;
 };
 
 
 export type QueryCollegeArgs = {
+  collegeId: Scalars['ObjectId'];
+};
+
+
+export type QueryCollegeStudentsArgs = {
   collegeId: Scalars['ObjectId'];
 };
 
@@ -40,6 +47,11 @@ export type QueryStudentArgs = {
 
 
 export type QueryBranchArgs = {
+  branchId: Scalars['ObjectId'];
+};
+
+
+export type QueryBranchStudentsArgs = {
   branchId: Scalars['ObjectId'];
 };
 
@@ -188,6 +200,28 @@ export type AssignStudentDto = {
   branchId: Scalars['ID'];
 };
 
+export type CollegesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CollegesQuery = (
+  { __typename?: 'Query' }
+  & { colleges?: Maybe<Array<(
+    { __typename?: 'College' }
+    & Pick<College, 'id' | 'name'>
+  )>> }
+);
+
+export type CreateCollegeMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateCollegeMutation = (
+  { __typename?: 'Mutation' }
+  & { createCollege: (
+    { __typename?: 'College' }
+    & Pick<College, 'id' | 'name'>
+  ) }
+);
+
 export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -230,6 +264,71 @@ export type RegisterMutation = (
 );
 
 
+export const CollegesDocument = gql`
+    query Colleges {
+  colleges {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useCollegesQuery__
+ *
+ * To run a query within a React component, call `useCollegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollegesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCollegesQuery(baseOptions?: Apollo.QueryHookOptions<CollegesQuery, CollegesQueryVariables>) {
+        return Apollo.useQuery<CollegesQuery, CollegesQueryVariables>(CollegesDocument, baseOptions);
+      }
+export function useCollegesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CollegesQuery, CollegesQueryVariables>) {
+          return Apollo.useLazyQuery<CollegesQuery, CollegesQueryVariables>(CollegesDocument, baseOptions);
+        }
+export type CollegesQueryHookResult = ReturnType<typeof useCollegesQuery>;
+export type CollegesLazyQueryHookResult = ReturnType<typeof useCollegesLazyQuery>;
+export type CollegesQueryResult = Apollo.QueryResult<CollegesQuery, CollegesQueryVariables>;
+export const CreateCollegeDocument = gql`
+    mutation CreateCollege {
+  createCollege(college: {name: "Rampyuk Naruto's College"}) {
+    id
+    name
+  }
+}
+    `;
+export type CreateCollegeMutationFn = Apollo.MutationFunction<CreateCollegeMutation, CreateCollegeMutationVariables>;
+
+/**
+ * __useCreateCollegeMutation__
+ *
+ * To run a mutation, you first call `useCreateCollegeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCollegeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCollegeMutation, { data, loading, error }] = useCreateCollegeMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCreateCollegeMutation(baseOptions?: Apollo.MutationHookOptions<CreateCollegeMutation, CreateCollegeMutationVariables>) {
+        return Apollo.useMutation<CreateCollegeMutation, CreateCollegeMutationVariables>(CreateCollegeDocument, baseOptions);
+      }
+export type CreateCollegeMutationHookResult = ReturnType<typeof useCreateCollegeMutation>;
+export type CreateCollegeMutationResult = Apollo.MutationResult<CreateCollegeMutation>;
+export type CreateCollegeMutationOptions = Apollo.BaseMutationOptions<CreateCollegeMutation, CreateCollegeMutationVariables>;
 export const HelloDocument = gql`
     query Hello {
   hello

@@ -19,17 +19,21 @@ const Register: React.FC<RouteComponentProps> = ({ history }) => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await register({
-      variables: {
-        username,
-        password,
-      },
-    });
+    try {
+      const response = await register({
+        variables: {
+          username,
+          password,
+        },
+      });
 
-    if (response && response.data) {
-      history.push('/');
-    } else {
-      console.log('errors:', response);
+      if (response && response.data) {
+        history.push('/');
+      } else {
+        console.log('errors:', response);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

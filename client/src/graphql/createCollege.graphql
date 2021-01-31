@@ -1,0 +1,6 @@
+mutation CreateCollege {
+  createCollege(college: { name: "Rampyuk Naruto's College" }) {
+    id
+    name
+  }
+}

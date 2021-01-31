@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   Flex,
   Box,
@@ -43,11 +42,11 @@ const AuthForm: React.FC<Props> = props => {
           <form onSubmit={onSubmit}>
             <FormControl>
               <FormLabel>Username</FormLabel>
-              <Input onChange={onChangeUsername} />
+              <Input onChange={onChangeUsername} isRequired />
             </FormControl>
             <FormControl mt={6}>
               <FormLabel>Password</FormLabel>
-              <Input type="password" onChange={onChangePassword} />
+              <Input type="password" onChange={onChangePassword} isRequired />
             </FormControl>
             <Button
               width="full"
