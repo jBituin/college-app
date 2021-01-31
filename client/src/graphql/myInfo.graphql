@@ -1,0 +1,3 @@
+query MyInfo {
+  myInfo
+}
