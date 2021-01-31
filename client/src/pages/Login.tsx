@@ -1,12 +1,14 @@
-import React, { useState, SyntheticEvent } from 'react';
+import React, { useState } from 'react';
 import { useLoginMutation } from '../generated/graphql';
 import { RouteComponentProps } from 'react-router-dom';
 import { setAccessToken } from '../accessToken';
 import AuthForm from '../components/AuthForm';
+import { useToast } from '@chakra-ui/react';
 
 const Login: React.FC<RouteComponentProps> = ({ history }) => {
-  const [username, setUsername] = useState('joms');
-  const [password, setPassword] = useState('joms');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const toast = useToast();
   const [login] = useLoginMutation();
 
   const onChangeUsername = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -20,18 +22,25 @@ const Login: React.FC<RouteComponentProps> = ({ history }) => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await login({
-      variables: {
-        username,
-        password,
-      },
-    });
+    try {
+      const response = await login({
+        variables: {
+          username,
+          password,
+        },
+      });
 
-    if (response && response.data) {
-      setAccessToken(response.data.login.accessToken);
-      history.push('/my-info');
-    } else {
-      console.log('errors:', response);
+      if (response && response.data) {
+        setAccessToken(response.data.login.accessToken);
+        history.push('/my-info');
+      }
+    } catch (err) {
+      toast({
+        title: 'Invalid credentials.',
+        status: 'warning',
+        duration: 2000,
+        isClosable: true,
+      });
     }
   };
 
@@ -40,6 +49,8 @@ const Login: React.FC<RouteComponentProps> = ({ history }) => {
       onChangePassword={onChangePassword}
       onChangeUsername={onChangeUsername}
       onSubmit={onSubmit}
+      username={username}
+      password={password}
       headingText="Login"
       buttonText="Sign in"
     ></AuthForm>
