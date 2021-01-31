@@ -1,0 +1,12 @@
+query Branches {
+  branches {
+    _id
+    name
+    collegeId
+    numberOfStudents
+    college {
+      _id
+      name
+    }
+  }
+}

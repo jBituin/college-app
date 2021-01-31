@@ -1,0 +1,7 @@
+mutation CreateBranch($branch: BranchDTO!, $collegeId: ObjectId!) {
+  createBranch(branch: $branch, collegeId: $collegeId) {
+    _id
+    name
+    collegeId
+  }
+}

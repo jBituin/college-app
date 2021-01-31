@@ -1,6 +1,7 @@
-mutation CreateCollege {
-  createCollege(college: { name: "Rampyuk Naruto's College" }) {
-    id
+mutation CreateCollege($college: CollegeDTO!) {
+  createCollege(college: $college) {
+    _id
     name
+    createdBy
   }
 }

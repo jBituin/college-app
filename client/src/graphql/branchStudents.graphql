@@ -1,0 +1,8 @@
+query BranchStudents($branchId: ObjectId!) {
+  branchStudents(branchId: $branchId) {
+    _id
+    collegeId
+    firstName
+    lastName
+  }
+}

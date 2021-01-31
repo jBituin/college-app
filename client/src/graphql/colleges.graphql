@@ -1,6 +1,7 @@
 query Colleges {
   colleges {
-    id
+    _id
     name
+    createdBy
   }
 }

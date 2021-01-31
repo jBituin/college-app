@@ -1,0 +1,8 @@
+query CollegeStudents($collegeId: ObjectId!) {
+  collegeStudents(collegeId: $collegeId) {
+    _id
+    collegeId
+    firstName
+    lastName
+  }
+}

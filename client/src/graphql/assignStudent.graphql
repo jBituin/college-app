@@ -1,0 +1,3 @@
+mutation AssignStudent($assignStudent: AssignStudentDTO!) {
+  assignStudent(assignStudent: $assignStudent)
+}
