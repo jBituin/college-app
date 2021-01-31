@@ -6,6 +6,8 @@ import { BranchDTO } from '../Branch/BranchDTO';
 import { ObjectIdScalar } from '../object-id.scalar';
 import { isAuth } from '../auth';
 import { AssignStudentDTO } from '../Branch/AssignStudentDTO';
+import { Student } from '../Student/StudentSchema';
+import { StudentModel } from '..//Student/StudentModel';
 
 @Resolver(() => Branch)
 export class BranchResolver {
@@ -24,11 +26,14 @@ export class BranchResolver {
 
   @Mutation(() => Branch)
   @UseMiddleware(isAuth)
-  async createBranch(@Arg('branch') branchDTO: BranchDTO, @Arg('collegeId') collegeId: string): Promise<Branch> {
+  async createBranch(
+    @Arg('branch') branchDTO: BranchDTO,
+    @Arg('collegeId') collegeId: string
+  ): Promise<Branch> {
     const branch = await BranchModel.create({
       ...branchDTO,
       collegeId,
-      students: []
+      students: [],
     });
     await branch.save();
     return branch;
@@ -60,17 +65,36 @@ export class BranchResolver {
   @UseMiddleware(isAuth)
   async assignStudent(
     @Arg('assignStudent') assignStudentDTO: AssignStudentDTO
-
   ) {
     const { branchId, studentId } = assignStudentDTO;
-    await BranchModel.update({
-      _id: new ObjectId(branchId),
-    }, {
+    await BranchModel.update(
+      {
+        _id: new ObjectId(branchId),
+      },
+      {
         $push: {
-          students: studentId
-        }
-      });
+          students: studentId,
+        },
+      }
+    );
 
     return true;
+  }
+
+  @Query(() => [Student])
+  @UseMiddleware(isAuth)
+  async branchStudents(
+    @Arg('branchId', () => ObjectIdScalar) branchId: ObjectId
+  ): Promise<Student[]> {
+    const branch = await BranchModel.findOne(branchId);
+    if (!branch) {
+      throw new Error('Branch does not exist');
+    }
+    const students = await StudentModel.find({
+      _id: {
+        $in: branch.students,
+      },
+    });
+    return students;
   }
 }
