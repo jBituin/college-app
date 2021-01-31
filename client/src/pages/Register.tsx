@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useRegisterMutation } from '../generated/graphql';
 import { RouteComponentProps } from 'react-router-dom';
 import AuthForm from '../components/AuthForm';
+import { useToast } from '@chakra-ui/react';
 
 const Register: React.FC<RouteComponentProps> = ({ history }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const toast = useToast();
   const [register] = useRegisterMutation();
 
   const onChangeUsername = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -28,12 +30,23 @@ const Register: React.FC<RouteComponentProps> = ({ history }) => {
       });
 
       if (response && response.data) {
-        history.push('/');
+        toast({
+          title: 'Account created.',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+        });
+        history.push('/login');
       } else {
         console.log('errors:', response);
       }
     } catch (error) {
-      console.log(error);
+      toast({
+        title: 'Something went wrong. Please try again',
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+      });
     }
   };
 
@@ -42,6 +55,8 @@ const Register: React.FC<RouteComponentProps> = ({ history }) => {
       onSubmit={onSubmit}
       onChangePassword={onChangePassword}
       onChangeUsername={onChangeUsername}
+      username={username}
+      password={password}
       headingText="Register"
       buttonText="Sign up"
     ></AuthForm>

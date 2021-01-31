@@ -7,6 +7,7 @@ import {
   FormLabel,
   Input,
   Button,
+  Text,
 } from '@chakra-ui/react';
 
 interface Props {
@@ -15,15 +16,19 @@ interface Props {
   onChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
   headingText: String;
   buttonText: String;
+  username: string;
+  password: string;
 }
 
-const AuthForm: React.FC<Props> = props => {
+const AuthForm: React.FC<Props> = (props) => {
   const {
     onChangePassword,
     onChangeUsername,
     onSubmit,
     headingText,
     buttonText,
+    username,
+    password,
   } = props;
 
   return (
@@ -42,11 +47,16 @@ const AuthForm: React.FC<Props> = props => {
           <form onSubmit={onSubmit}>
             <FormControl>
               <FormLabel>Username</FormLabel>
-              <Input onChange={onChangeUsername} isRequired />
+              <Input value={username} onChange={onChangeUsername} isRequired />
             </FormControl>
             <FormControl mt={6}>
               <FormLabel>Password</FormLabel>
-              <Input type="password" onChange={onChangePassword} isRequired />
+              <Input
+                value={password}
+                type="password"
+                onChange={onChangePassword}
+                isRequired
+              />
             </FormControl>
             <Button
               width="full"
