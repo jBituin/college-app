@@ -7,7 +7,7 @@ export class User {
   readonly id: string;
 
   @Field()
-  @Property({ required: true })
+  @Property({ required: true, unique: true })
   username: string;
 
   @Property({ required: true })

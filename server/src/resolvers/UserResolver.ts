@@ -45,8 +45,8 @@ export class UserResolver {
   @Query(() => String)
   @UseMiddleware(isAuth)
   async myInfo(@Ctx() { payload }: MyContext) {
-    const user = await UserModel.findOne(new ObjectId(payload!.userId))
-    return `Your user id is: ${payload!.userId}, username is: ${user?.username}`;
+    const user = await UserModel.findOne(new ObjectId(payload!.userId));
+    return user?.username;
   }
 
   @Mutation(() => Boolean)
@@ -71,7 +71,7 @@ export class UserResolver {
     @Ctx() { res }: MyContext
   ): Promise<LoginResponse> {
     const user = await UserModel.findOne({ username });
-    
+
     if (!user) {
       throw new Error('User does not exist');
     }
