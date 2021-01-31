@@ -45,6 +45,6 @@ export const isAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
 export const sendRefreshToken = (res: Response, token: string) => {
   res.cookie('refrId', token, {
     httpOnly: true,
-    path: '/refresh_token',
+    path: '/refresh-token',
   });
 };
