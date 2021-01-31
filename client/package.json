@@ -5,6 +5,9 @@
   "dependencies": {
     "@apollo/client": "^3.3.7",
     "@apollo/react-hooks": "^4.0.0",
+    "@chakra-ui/react": "^1.2.1",
+    "@emotion/react": "^11.1.4",
+    "@emotion/styled": "^11.0.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.2",
@@ -12,6 +15,7 @@
     "@types/node": "^12.19.15",
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
+    "framer-motion": "^3.2.2-rc.1",
     "graphql": "^15.4.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
