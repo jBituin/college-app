@@ -1,5 +1,13 @@
 import { ObjectId } from 'mongodb';
-import { Query, Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
+import {
+  Query,
+  Resolver,
+  Mutation,
+  Arg,
+  UseMiddleware,
+  ObjectType,
+  Field,
+} from 'type-graphql';
 import { BranchModel } from '../Branch/BranchModel';
 import { Branch } from '../Branch/BranchSchema';
 import { BranchDTO } from '../Branch/BranchDTO';
@@ -7,15 +15,47 @@ import { ObjectIdScalar } from '../object-id.scalar';
 import { isAuth } from '../auth';
 import { AssignStudentDTO } from '../Branch/AssignStudentDTO';
 import { Student } from '../Student/StudentSchema';
-import { StudentModel } from '..//Student/StudentModel';
+import { StudentModel } from '../Student/StudentModel';
+import { College } from '../College/CollegeSchema';
 
+@ObjectType()
+class BranchItem extends Branch {
+  @Field()
+  numberOfStudents!: number;
+
+  @Field()
+  college: College;
+}
 @Resolver(() => Branch)
 export class BranchResolver {
-  @Query(() => [Branch], { nullable: true })
+  @Query(() => [BranchItem], { nullable: true })
   @UseMiddleware(isAuth)
   // todo: paginate branches
-  async branches(): Promise<Branch[]> {
-    return await BranchModel.find({});
+  async branches(): Promise<BranchItem[]> {
+    const aggregate = BranchModel.aggregate();
+    aggregate.lookup({
+      from: 'colleges',
+      localField: 'collegeId',
+      foreignField: '_id',
+      as: 'college',
+    });
+    aggregate.unwind('$college');
+    aggregate.project({
+      _id: true,
+      name: true,
+      students: true,
+      collegeId: true,
+      college: true,
+      numberOfStudents: { $size: '$students' },
+    });
+
+    // return await BranchModel.find({});
+    const branches: BranchItem[] = await aggregate.exec();
+    console.log(
+      'JSON.stringify(branches, null, 2)',
+      JSON.stringify(branches, null, 2)
+    );
+    return branches;
   }
 
   @Query(() => Branch, { nullable: true })
@@ -28,7 +68,7 @@ export class BranchResolver {
   @UseMiddleware(isAuth)
   async createBranch(
     @Arg('branch') branchDTO: BranchDTO,
-    @Arg('collegeId') collegeId: string
+    @Arg('collegeId', () => ObjectIdScalar) collegeId: ObjectId
   ): Promise<Branch> {
     const branch = await BranchModel.create({
       ...branchDTO,
@@ -73,7 +113,7 @@ export class BranchResolver {
       },
       {
         $push: {
-          students: studentId,
+          students: new ObjectId(studentId),
         },
       }
     );

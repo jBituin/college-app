@@ -1,17 +1,42 @@
 import { ObjectId } from 'mongodb';
-import { Query, Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
+import {
+  Query,
+  Resolver,
+  Mutation,
+  Arg,
+  UseMiddleware,
+  ObjectType,
+  Field,
+} from 'type-graphql';
 import { StudentModel } from '../Student/StudentModel';
 import { Student } from '../Student/StudentSchema';
 import { StudentDTO } from '../Student/StudentDTO';
 import { ObjectIdScalar } from '../object-id.scalar';
 import { isAuth } from '../auth';
+import { College } from '../College/CollegeSchema';
+
+@ObjectType()
+class StudentItem extends Student {
+  @Field()
+  college!: College;
+}
 
 @Resolver(() => Student)
 export class StudentResolver {
-  @Query(() => [Student], { nullable: true })
+  @Query(() => [StudentItem], { nullable: true })
   @UseMiddleware(isAuth)
-  async students(): Promise<Student[]> {
-    return await StudentModel.find({});
+  async students(): Promise<StudentItem[]> {
+    const aggregate = StudentModel.aggregate();
+    aggregate.lookup({
+      from: 'colleges',
+      localField: 'collegeId',
+      foreignField: '_id',
+      as: 'college',
+    });
+    aggregate.unwind('$college');
+
+    const students: StudentItem[] = await aggregate.exec();
+    return students;
   }
 
   @Query(() => Student, { nullable: true })
@@ -24,11 +49,11 @@ export class StudentResolver {
   @UseMiddleware(isAuth)
   async createStudent(
     @Arg('student') studentDTO: StudentDTO,
-    @Arg('collegeId') collegeId: string
+    @Arg('collegeId', () => ObjectIdScalar) collegeId: ObjectId
   ): Promise<Student> {
     const student = await StudentModel.create({
       ...studentDTO,
-      collegeId
+      collegeId,
     });
     await student.save();
     return student;
