@@ -12,7 +12,9 @@ import { College } from '../College/CollegeSchema';
 import { CollegeDTO } from '../College/CollegeDTO';
 import { ObjectIdScalar } from '../object-id.scalar';
 import { isAuth } from '../auth';
-import { MyContext } from 'src/MyContext';
+import { MyContext } from '../MyContext';
+import { Student } from '../Student/StudentSchema';
+import { StudentModel } from '../Student/StudentModel';
 
 @Resolver(() => College)
 export class CollegeResolver {
@@ -67,5 +69,20 @@ export class CollegeResolver {
   ) {
     const deletedCollege = await CollegeModel.findByIdAndDelete(collegeId);
     return deletedCollege;
+  }
+
+  @Query(() => [Student])
+  @UseMiddleware(isAuth)
+  async collegeStudents(
+    @Arg('collegeId', () => ObjectIdScalar) collegeId: ObjectId
+  ): Promise<Student[]> {
+    const college = await CollegeModel.findOne(collegeId);
+    if (!college) {
+      throw new Error('College does not exist');
+    }
+    const students = await StudentModel.find({
+      collegeId: ObjectIdScalar.serialize(collegeId),
+    });
+    return students;
   }
 }
