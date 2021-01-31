@@ -39,7 +39,7 @@ export class CollegeResolver {
   ): Promise<College> {
     const college = await CollegeModel.create({
       ...collegeDTO,
-      createdBy: payload!.userId,
+      createdBy: new ObjectId(payload!.userId),
     });
     await college.save();
     return college;

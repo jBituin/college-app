@@ -7,14 +7,14 @@ import { Response } from 'express';
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from './env.variables';
 
 export const createAccessToken = (user: User) => {
-  return sign({ userId: user.id }, ACCESS_TOKEN_SECRET!, {
-    expiresIn: '15m',
+  return sign({ userId: user._id }, ACCESS_TOKEN_SECRET!, {
+    expiresIn: '1d',
   });
 };
 
 export const createRefreshToken = (user: User) => {
   return sign(
-    { userId: user.id, tokenVersion: user.tokenVersion },
+    { userId: user._id, tokenVersion: user.tokenVersion },
     REFRESH_TOKEN_SECRET!,
     {
       expiresIn: '7d',

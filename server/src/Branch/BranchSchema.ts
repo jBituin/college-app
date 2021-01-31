@@ -1,10 +1,11 @@
 import { prop as Property } from '@typegoose/typegoose';
 import { Field, ObjectType, ID } from 'type-graphql';
+import { ObjectId } from 'mongodb';
 
 @ObjectType()
 export class Branch {
   @Field(() => ID)
-  readonly id: string;
+  readonly _id: ObjectId;
 
   @Field()
   @Property({ required: true })
@@ -12,9 +13,9 @@ export class Branch {
 
   @Field(() => ID)
   @Property({ required: true })
-  collegeId: string;
+  collegeId: ObjectId;
 
   @Field(() => [ID])
   @Property({ default: [] })
-  students: string[];
+  students: ObjectId[];
 }
