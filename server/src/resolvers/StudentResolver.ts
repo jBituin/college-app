@@ -19,6 +19,9 @@ import { College } from '../College/CollegeSchema';
 class StudentItem extends Student {
   @Field()
   college!: College;
+
+  @Field()
+  fullName!: string;
 }
 
 @Resolver(() => Student)
@@ -34,6 +37,11 @@ export class StudentResolver {
       as: 'college',
     });
     aggregate.unwind('$college');
+    aggregate.addFields({
+      fullName: {
+        $concat: ['$firstName', ' ', '$lastName'],
+      },
+    });
 
     const students: StudentItem[] = await aggregate.exec();
     return students;
