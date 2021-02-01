@@ -89,7 +89,7 @@ import {
 
   apolloServer.applyMiddleware({ app, cors: false });
 
-  const PORT = process.env.PORT || 4000;
+  const PORT = process.env.PORT || 8888;
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });

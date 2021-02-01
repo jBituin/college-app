@@ -16,7 +16,7 @@ import { getAccessToken, setAccessToken } from './accessToken';
 import App from './App';
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:4000/graphql',
+  uri: 'http://localhost:8888/graphql',
   credentials: 'include',
 });
 
@@ -50,7 +50,7 @@ const tokenRefreshLink = new TokenRefreshLink({
     }
   },
   fetchAccessToken: () => {
-    return fetch('http://localhost:4000/refresh-token', {
+    return fetch('http://localhost:8888/refresh-token', {
       method: 'POST',
       credentials: 'include',
     });

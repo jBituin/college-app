@@ -31,6 +31,11 @@ A simple college management app
 
 ## Installation
 
+### Dependencies
+
+- [Install MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
+- [Install NodeJS](https://nodejs.org/en/download/)
+
 #### `Step 1` - clone the repo
 
 ```bash
@@ -45,14 +50,6 @@ $ cd college-app
 
 #### `Step 3` - run a mongodb server
 
-`Skip if mongo is already installed in the system`
-
-```bash
-$ brew install mongo
-```
-
-`run mongodb`
-
 ```bash
 $ mongod
 ```
@@ -60,7 +57,7 @@ $ mongod
 #### `Step 4` - run application
 
 ```bash
-$ npm start local
+$ npm run local
 ```
 
 In browser, open [http://localhost:3000](http://localhost:3000)

@@ -6,7 +6,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:4000/refresh-token', {
+    fetch('http://localhost:8888/refresh-token', {
       credentials: 'include',
       method: 'POST',
     }).then(async (response) => {
