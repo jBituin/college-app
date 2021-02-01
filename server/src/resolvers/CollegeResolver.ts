@@ -15,6 +15,8 @@ import { isAuth } from '../auth';
 import { MyContext } from '../MyContext';
 import { Student } from '../Student/StudentSchema';
 import { StudentModel } from '../Student/StudentModel';
+import { Branch } from '../Branch/BranchSchema';
+import { BranchModel } from '../Branch/BranchModel';
 
 @Resolver(() => College)
 export class CollegeResolver {
@@ -84,5 +86,20 @@ export class CollegeResolver {
       collegeId: ObjectIdScalar.serialize(collegeId),
     });
     return students;
+  }
+
+  @Query(() => [Branch])
+  @UseMiddleware(isAuth)
+  async collegeBranches(
+    @Arg('collegeId', () => ObjectIdScalar) collegeId: ObjectId
+  ): Promise<Branch[]> {
+    const college = await CollegeModel.findOne(collegeId);
+    if (!college) {
+      throw new Error('College does not exist');
+    }
+    const branches = await BranchModel.find({
+      collegeId: ObjectIdScalar.serialize(collegeId),
+    });
+    return branches;
   }
 }
