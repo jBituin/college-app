@@ -197,7 +197,7 @@ const Student: React.FC = () => {
           ></Listing>
         );
       } else {
-        childComponent = <div>No branches</div>;
+        childComponent = <div>No students</div>;
       }
     }
 
