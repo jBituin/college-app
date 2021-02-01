@@ -109,7 +109,7 @@ export class UserResolver {
       await user.save();
     } catch (err) {
       console.log(err);
-      return false;
+      return err;
     }
 
     return true;
