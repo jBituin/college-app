@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "local": "npm run client & npm run server",
+    "client": "cd client && npm install && npm start",
+    "server": "cd server && npm install && npm start"
   },
   "author": "",
   "license": "ISC",
