@@ -112,7 +112,7 @@ export class BranchResolver {
         _id: new ObjectId(branchId),
       },
       {
-        $push: {
+        $addToSet: {
           students: new ObjectId(studentId),
         },
       }

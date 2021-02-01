@@ -73,13 +73,13 @@ export class UserResolver {
     const user = await UserModel.findOne({ username });
 
     if (!user) {
-      throw new Error('User does not exist');
+      throw new Error('Invalid credentials');
     }
 
     const valid = await compare(password, user.password);
 
     if (!valid) {
-      throw new Error('Invalid password');
+      throw new Error('Invalid credentials');
     }
 
     // login successful

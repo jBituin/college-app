@@ -35,8 +35,12 @@ const Login: React.FC<RouteComponentProps> = ({ history }) => {
         history.push('/my-info');
       }
     } catch (err) {
+      let message = 'Something went wrong. Please try again later.';
+      const error = JSON.stringify(err);
+      if (error.includes('Invalid Credentials'))
+        message = 'Invalid credentials.';
       toast({
-        title: 'Invalid credentials.',
+        title: message,
         status: 'warning',
         duration: 2000,
         isClosable: true,
