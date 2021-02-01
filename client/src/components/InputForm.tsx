@@ -7,12 +7,17 @@ import {
   FormLabel,
   Input,
   Button,
+  Select,
 } from '@chakra-ui/react';
 
 interface InputField {
-  onChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeHandler: (v: string) => void;
   fieldTitle: string;
   isRequired: boolean;
+  type?: string;
+  options?: any[];
+  optionsValueKey?: string;
+  optionsDisplayKey?: string;
 }
 interface Props {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -23,14 +28,59 @@ interface Props {
 
 const InputForm: React.FC<Props> = (props) => {
   const { onSubmit, headingText, buttonText, inputFields } = props;
-
   const renderInputFields = () => {
-    return inputFields.map(({ onChangeHandler, fieldTitle, isRequired }) => (
-      <FormControl key={fieldTitle}>
-        <FormLabel>{fieldTitle}</FormLabel>
-        <Input onChange={onChangeHandler} isRequired={isRequired} />
-      </FormControl>
-    ));
+    return inputFields.map(
+      ({
+        onChangeHandler,
+        fieldTitle,
+        isRequired,
+        type,
+        options,
+        optionsDisplayKey,
+        optionsValueKey,
+      }) => (
+        <FormControl key={fieldTitle}>
+          <FormLabel>{fieldTitle}</FormLabel>
+          {(() => {
+            if (
+              type === 'select' &&
+              options?.length &&
+              optionsDisplayKey &&
+              optionsValueKey
+            ) {
+              return (
+                <Select
+                  onChange={(e) => onChangeHandler(e.currentTarget.value)}
+                  isReadOnly
+                  isRequired={isRequired}
+                >
+                  <option value=""> --Select item--</option>
+                  {(() => {
+                    return options.map((option, index) => {
+                      return (
+                        <option
+                          key={option[optionsValueKey]}
+                          value={option[optionsValueKey]}
+                        >
+                          {option[optionsDisplayKey]}
+                        </option>
+                      );
+                    });
+                  })()}
+                </Select>
+              );
+            } else {
+              return (
+                <Input
+                  onChange={(e) => onChangeHandler(e.currentTarget.value)}
+                  isRequired={isRequired}
+                />
+              );
+            }
+          })()}
+        </FormControl>
+      )
+    );
   };
   return (
     <Flex
