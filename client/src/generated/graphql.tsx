@@ -1,13 +1,9 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -27,6 +23,7 @@ export type Query = {
   colleges?: Maybe<Array<College>>;
   college?: Maybe<College>;
   collegeStudents: Array<Student>;
+  collegeBranches: Array<Branch>;
   students?: Maybe<Array<StudentItem>>;
   student?: Maybe<Student>;
   branches?: Maybe<Array<BranchItem>>;
@@ -34,21 +31,31 @@ export type Query = {
   branchStudents: Array<Student>;
 };
 
+
 export type QueryCollegeArgs = {
   collegeId: Scalars['ObjectId'];
 };
+
 
 export type QueryCollegeStudentsArgs = {
   collegeId: Scalars['ObjectId'];
 };
 
+
+export type QueryCollegeBranchesArgs = {
+  collegeId: Scalars['ObjectId'];
+};
+
+
 export type QueryStudentArgs = {
   studentId: Scalars['ObjectId'];
 };
 
+
 export type QueryBranchArgs = {
   branchId: Scalars['ObjectId'];
 };
+
 
 export type QueryBranchStudentsArgs = {
   branchId: Scalars['ObjectId'];
@@ -68,12 +75,21 @@ export type College = {
   createdBy: Scalars['ID'];
 };
 
+
 export type Student = {
   __typename?: 'Student';
   _id: Scalars['ID'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   collegeId: Scalars['ID'];
+};
+
+export type Branch = {
+  __typename?: 'Branch';
+  _id: Scalars['ID'];
+  name: Scalars['String'];
+  collegeId: Scalars['ID'];
+  students: Array<Scalars['ID']>;
 };
 
 export type StudentItem = {
@@ -83,6 +99,7 @@ export type StudentItem = {
   lastName: Scalars['String'];
   collegeId: Scalars['ID'];
   college: College;
+  fullName: Scalars['String'];
 };
 
 export type BranchItem = {
@@ -93,14 +110,6 @@ export type BranchItem = {
   students: Array<Scalars['ID']>;
   numberOfStudents: Scalars['Float'];
   college: College;
-};
-
-export type Branch = {
-  __typename?: 'Branch';
-  _id: Scalars['ID'];
-  name: Scalars['String'];
-  collegeId: Scalars['ID'];
-  students: Array<Scalars['ID']>;
 };
 
 export type Mutation = {
@@ -121,60 +130,73 @@ export type Mutation = {
   assignStudent: Scalars['Boolean'];
 };
 
+
 export type MutationRevokeRefreshTokensForUserArgs = {
   userId: Scalars['ObjectId'];
 };
+
 
 export type MutationLoginArgs = {
   password: Scalars['String'];
   username: Scalars['String'];
 };
 
+
 export type MutationRegisterArgs = {
   password: Scalars['String'];
   username: Scalars['String'];
 };
 
+
 export type MutationCreateCollegeArgs = {
   college: CollegeDto;
 };
+
 
 export type MutationUpdateCollegeArgs = {
   college: CollegeDto;
   collegeId: Scalars['ObjectId'];
 };
 
+
 export type MutationDeleteCollegeArgs = {
   collegeId: Scalars['ObjectId'];
 };
+
 
 export type MutationCreateStudentArgs = {
   collegeId: Scalars['ObjectId'];
   student: StudentDto;
 };
 
+
 export type MutationUpdateStudentArgs = {
   student: StudentDto;
   studentId: Scalars['ObjectId'];
 };
 
+
 export type MutationDeleteStudentArgs = {
   studentId: Scalars['ObjectId'];
 };
+
 
 export type MutationCreateBranchArgs = {
   collegeId: Scalars['ObjectId'];
   branch: BranchDto;
 };
 
+
 export type MutationUpdateBranchArgs = {
   branch: BranchDto;
   branchId: Scalars['ObjectId'];
 };
 
+
 export type MutationDeleteBranchArgs = {
   branchId: Scalars['ObjectId'];
 };
+
 
 export type MutationAssignStudentArgs = {
   assignStudent: AssignStudentDto;
@@ -208,155 +230,176 @@ export type AssignStudentMutationVariables = Exact<{
   assignStudent: AssignStudentDto;
 }>;
 
-export type AssignStudentMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'assignStudent'
->;
+
+export type AssignStudentMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'assignStudent'>
+);
 
 export type BranchStudentsQueryVariables = Exact<{
   branchId: Scalars['ObjectId'];
 }>;
 
-export type BranchStudentsQuery = { __typename?: 'Query' } & {
-  branchStudents: Array<
-    { __typename?: 'Student' } & Pick<
-      Student,
-      '_id' | 'collegeId' | 'firstName' | 'lastName'
-    >
-  >;
-};
 
-export type BranchesQueryVariables = Exact<{ [key: string]: never }>;
+export type BranchStudentsQuery = (
+  { __typename?: 'Query' }
+  & { branchStudents: Array<(
+    { __typename?: 'Student' }
+    & Pick<Student, '_id' | 'collegeId' | 'firstName' | 'lastName'>
+  )> }
+);
 
-export type BranchesQuery = { __typename?: 'Query' } & {
-  branches?: Maybe<
-    Array<
-      { __typename?: 'BranchItem' } & Pick<
-        BranchItem,
-        '_id' | 'name' | 'collegeId' | 'numberOfStudents'
-      > & {
-          college: { __typename?: 'College' } & Pick<College, '_id' | 'name'>;
-        }
-    >
-  >;
-};
+export type BranchesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type BranchesQuery = (
+  { __typename?: 'Query' }
+  & { branches?: Maybe<Array<(
+    { __typename?: 'BranchItem' }
+    & Pick<BranchItem, '_id' | 'name' | 'collegeId' | 'numberOfStudents'>
+    & { college: (
+      { __typename?: 'College' }
+      & Pick<College, '_id' | 'name'>
+    ) }
+  )>> }
+);
 
 export type CollegeStudentsQueryVariables = Exact<{
   collegeId: Scalars['ObjectId'];
 }>;
 
-export type CollegeStudentsQuery = { __typename?: 'Query' } & {
-  collegeStudents: Array<
-    { __typename?: 'Student' } & Pick<
-      Student,
-      '_id' | 'collegeId' | 'firstName' | 'lastName'
-    >
-  >;
-};
 
-export type CollegesQueryVariables = Exact<{ [key: string]: never }>;
+export type CollegeStudentsQuery = (
+  { __typename?: 'Query' }
+  & { collegeStudents: Array<(
+    { __typename?: 'Student' }
+    & Pick<Student, '_id' | 'collegeId' | 'firstName' | 'lastName'>
+  )> }
+);
 
-export type CollegesQuery = { __typename?: 'Query' } & {
-  colleges?: Maybe<
-    Array<
-      { __typename?: 'College' } & Pick<College, '_id' | 'name' | 'createdBy'>
-    >
-  >;
-};
+export type CollegesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CollegesQuery = (
+  { __typename?: 'Query' }
+  & { colleges?: Maybe<Array<(
+    { __typename?: 'College' }
+    & Pick<College, '_id' | 'name' | 'createdBy'>
+  )>> }
+);
 
 export type CreateBranchMutationVariables = Exact<{
   branch: BranchDto;
   collegeId: Scalars['ObjectId'];
 }>;
 
-export type CreateBranchMutation = { __typename?: 'Mutation' } & {
-  createBranch: { __typename?: 'Branch' } & Pick<
-    Branch,
-    '_id' | 'name' | 'collegeId'
-  >;
-};
+
+export type CreateBranchMutation = (
+  { __typename?: 'Mutation' }
+  & { createBranch: (
+    { __typename?: 'Branch' }
+    & Pick<Branch, '_id' | 'name' | 'collegeId'>
+  ) }
+);
 
 export type CreateCollegeMutationVariables = Exact<{
   college: CollegeDto;
 }>;
 
-export type CreateCollegeMutation = { __typename?: 'Mutation' } & {
-  createCollege: { __typename?: 'College' } & Pick<
-    College,
-    '_id' | 'name' | 'createdBy'
-  >;
-};
+
+export type CreateCollegeMutation = (
+  { __typename?: 'Mutation' }
+  & { createCollege: (
+    { __typename?: 'College' }
+    & Pick<College, '_id' | 'name' | 'createdBy'>
+  ) }
+);
 
 export type CreateStudentMutationVariables = Exact<{
   student: StudentDto;
   collegeId: Scalars['ObjectId'];
 }>;
 
-export type CreateStudentMutation = { __typename?: 'Mutation' } & {
-  createStudent: { __typename?: 'Student' } & Pick<
-    Student,
-    '_id' | 'firstName' | 'lastName' | 'collegeId'
-  >;
-};
 
-export type HelloQueryVariables = Exact<{ [key: string]: never }>;
+export type CreateStudentMutation = (
+  { __typename?: 'Mutation' }
+  & { createStudent: (
+    { __typename?: 'Student' }
+    & Pick<Student, '_id' | 'firstName' | 'lastName' | 'collegeId'>
+  ) }
+);
 
-export type HelloQuery = { __typename?: 'Query' } & Pick<Query, 'hello'>;
+export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type HelloQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'hello'>
+);
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
 }>;
 
-export type LoginMutation = { __typename?: 'Mutation' } & {
-  login: { __typename?: 'LoginResponse' } & Pick<LoginResponse, 'accessToken'>;
-};
 
-export type LogoutMutationVariables = Exact<{ [key: string]: never }>;
+export type LoginMutation = (
+  { __typename?: 'Mutation' }
+  & { login: (
+    { __typename?: 'LoginResponse' }
+    & Pick<LoginResponse, 'accessToken'>
+  ) }
+);
 
-export type LogoutMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'logout'
->;
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
-export type MyInfoQueryVariables = Exact<{ [key: string]: never }>;
 
-export type MyInfoQuery = { __typename?: 'Query' } & Pick<Query, 'myInfo'>;
+export type LogoutMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'logout'>
+);
+
+export type MyInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyInfoQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'myInfo'>
+);
 
 export type RegisterMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
 }>;
 
-export type RegisterMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'register'
->;
 
-export type StudentsQueryVariables = Exact<{ [key: string]: never }>;
+export type RegisterMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'register'>
+);
 
-export type StudentsQuery = { __typename?: 'Query' } & {
-  students?: Maybe<
-    Array<
-      { __typename?: 'StudentItem' } & Pick<
-        StudentItem,
-        '_id' | 'firstName' | 'lastName'
-      > & {
-          college: { __typename?: 'College' } & Pick<College, '_id' | 'name'>;
-        }
-    >
-  >;
-};
+export type StudentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StudentsQuery = (
+  { __typename?: 'Query' }
+  & { students?: Maybe<Array<(
+    { __typename?: 'StudentItem' }
+    & Pick<StudentItem, '_id' | 'firstName' | 'lastName' | 'fullName'>
+    & { college: (
+      { __typename?: 'College' }
+      & Pick<College, '_id' | 'name'>
+    ) }
+  )>> }
+);
+
 
 export const AssignStudentDocument = gql`
-  mutation AssignStudent($assignStudent: AssignStudentDTO!) {
-    assignStudent(assignStudent: $assignStudent)
-  }
-`;
-export type AssignStudentMutationFn = Apollo.MutationFunction<
-  AssignStudentMutation,
-  AssignStudentMutationVariables
->;
+    mutation AssignStudent($assignStudent: AssignStudentDTO!) {
+  assignStudent(assignStudent: $assignStudent)
+}
+    `;
+export type AssignStudentMutationFn = Apollo.MutationFunction<AssignStudentMutation, AssignStudentMutationVariables>;
 
 /**
  * __useAssignStudentMutation__
@@ -375,35 +418,22 @@ export type AssignStudentMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useAssignStudentMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    AssignStudentMutation,
-    AssignStudentMutationVariables
-  >
-) {
-  return Apollo.useMutation<
-    AssignStudentMutation,
-    AssignStudentMutationVariables
-  >(AssignStudentDocument, baseOptions);
-}
-export type AssignStudentMutationHookResult = ReturnType<
-  typeof useAssignStudentMutation
->;
+export function useAssignStudentMutation(baseOptions?: Apollo.MutationHookOptions<AssignStudentMutation, AssignStudentMutationVariables>) {
+        return Apollo.useMutation<AssignStudentMutation, AssignStudentMutationVariables>(AssignStudentDocument, baseOptions);
+      }
+export type AssignStudentMutationHookResult = ReturnType<typeof useAssignStudentMutation>;
 export type AssignStudentMutationResult = Apollo.MutationResult<AssignStudentMutation>;
-export type AssignStudentMutationOptions = Apollo.BaseMutationOptions<
-  AssignStudentMutation,
-  AssignStudentMutationVariables
->;
+export type AssignStudentMutationOptions = Apollo.BaseMutationOptions<AssignStudentMutation, AssignStudentMutationVariables>;
 export const BranchStudentsDocument = gql`
-  query BranchStudents($branchId: ObjectId!) {
-    branchStudents(branchId: $branchId) {
-      _id
-      collegeId
-      firstName
-      lastName
-    }
+    query BranchStudents($branchId: ObjectId!) {
+  branchStudents(branchId: $branchId) {
+    _id
+    collegeId
+    firstName
+    lastName
   }
-`;
+}
+    `;
 
 /**
  * __useBranchStudentsQuery__
@@ -421,52 +451,29 @@ export const BranchStudentsDocument = gql`
  *   },
  * });
  */
-export function useBranchStudentsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    BranchStudentsQuery,
-    BranchStudentsQueryVariables
-  >
-) {
-  return Apollo.useQuery<BranchStudentsQuery, BranchStudentsQueryVariables>(
-    BranchStudentsDocument,
-    baseOptions
-  );
-}
-export function useBranchStudentsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    BranchStudentsQuery,
-    BranchStudentsQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<BranchStudentsQuery, BranchStudentsQueryVariables>(
-    BranchStudentsDocument,
-    baseOptions
-  );
-}
-export type BranchStudentsQueryHookResult = ReturnType<
-  typeof useBranchStudentsQuery
->;
-export type BranchStudentsLazyQueryHookResult = ReturnType<
-  typeof useBranchStudentsLazyQuery
->;
-export type BranchStudentsQueryResult = Apollo.QueryResult<
-  BranchStudentsQuery,
-  BranchStudentsQueryVariables
->;
+export function useBranchStudentsQuery(baseOptions: Apollo.QueryHookOptions<BranchStudentsQuery, BranchStudentsQueryVariables>) {
+        return Apollo.useQuery<BranchStudentsQuery, BranchStudentsQueryVariables>(BranchStudentsDocument, baseOptions);
+      }
+export function useBranchStudentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BranchStudentsQuery, BranchStudentsQueryVariables>) {
+          return Apollo.useLazyQuery<BranchStudentsQuery, BranchStudentsQueryVariables>(BranchStudentsDocument, baseOptions);
+        }
+export type BranchStudentsQueryHookResult = ReturnType<typeof useBranchStudentsQuery>;
+export type BranchStudentsLazyQueryHookResult = ReturnType<typeof useBranchStudentsLazyQuery>;
+export type BranchStudentsQueryResult = Apollo.QueryResult<BranchStudentsQuery, BranchStudentsQueryVariables>;
 export const BranchesDocument = gql`
-  query Branches {
-    branches {
+    query Branches {
+  branches {
+    _id
+    name
+    collegeId
+    numberOfStudents
+    college {
       _id
       name
-      collegeId
-      numberOfStudents
-      college {
-        _id
-        name
-      }
     }
   }
-`;
+}
+    `;
 
 /**
  * __useBranchesQuery__
@@ -483,43 +490,25 @@ export const BranchesDocument = gql`
  *   },
  * });
  */
-export function useBranchesQuery(
-  baseOptions?: Apollo.QueryHookOptions<BranchesQuery, BranchesQueryVariables>
-) {
-  return Apollo.useQuery<BranchesQuery, BranchesQueryVariables>(
-    BranchesDocument,
-    baseOptions
-  );
-}
-export function useBranchesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    BranchesQuery,
-    BranchesQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<BranchesQuery, BranchesQueryVariables>(
-    BranchesDocument,
-    baseOptions
-  );
-}
+export function useBranchesQuery(baseOptions?: Apollo.QueryHookOptions<BranchesQuery, BranchesQueryVariables>) {
+        return Apollo.useQuery<BranchesQuery, BranchesQueryVariables>(BranchesDocument, baseOptions);
+      }
+export function useBranchesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BranchesQuery, BranchesQueryVariables>) {
+          return Apollo.useLazyQuery<BranchesQuery, BranchesQueryVariables>(BranchesDocument, baseOptions);
+        }
 export type BranchesQueryHookResult = ReturnType<typeof useBranchesQuery>;
-export type BranchesLazyQueryHookResult = ReturnType<
-  typeof useBranchesLazyQuery
->;
-export type BranchesQueryResult = Apollo.QueryResult<
-  BranchesQuery,
-  BranchesQueryVariables
->;
+export type BranchesLazyQueryHookResult = ReturnType<typeof useBranchesLazyQuery>;
+export type BranchesQueryResult = Apollo.QueryResult<BranchesQuery, BranchesQueryVariables>;
 export const CollegeStudentsDocument = gql`
-  query CollegeStudents($collegeId: ObjectId!) {
-    collegeStudents(collegeId: $collegeId) {
-      _id
-      collegeId
-      firstName
-      lastName
-    }
+    query CollegeStudents($collegeId: ObjectId!) {
+  collegeStudents(collegeId: $collegeId) {
+    _id
+    collegeId
+    firstName
+    lastName
   }
-`;
+}
+    `;
 
 /**
  * __useCollegeStudentsQuery__
@@ -537,47 +526,24 @@ export const CollegeStudentsDocument = gql`
  *   },
  * });
  */
-export function useCollegeStudentsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    CollegeStudentsQuery,
-    CollegeStudentsQueryVariables
-  >
-) {
-  return Apollo.useQuery<CollegeStudentsQuery, CollegeStudentsQueryVariables>(
-    CollegeStudentsDocument,
-    baseOptions
-  );
-}
-export function useCollegeStudentsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    CollegeStudentsQuery,
-    CollegeStudentsQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<
-    CollegeStudentsQuery,
-    CollegeStudentsQueryVariables
-  >(CollegeStudentsDocument, baseOptions);
-}
-export type CollegeStudentsQueryHookResult = ReturnType<
-  typeof useCollegeStudentsQuery
->;
-export type CollegeStudentsLazyQueryHookResult = ReturnType<
-  typeof useCollegeStudentsLazyQuery
->;
-export type CollegeStudentsQueryResult = Apollo.QueryResult<
-  CollegeStudentsQuery,
-  CollegeStudentsQueryVariables
->;
+export function useCollegeStudentsQuery(baseOptions: Apollo.QueryHookOptions<CollegeStudentsQuery, CollegeStudentsQueryVariables>) {
+        return Apollo.useQuery<CollegeStudentsQuery, CollegeStudentsQueryVariables>(CollegeStudentsDocument, baseOptions);
+      }
+export function useCollegeStudentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CollegeStudentsQuery, CollegeStudentsQueryVariables>) {
+          return Apollo.useLazyQuery<CollegeStudentsQuery, CollegeStudentsQueryVariables>(CollegeStudentsDocument, baseOptions);
+        }
+export type CollegeStudentsQueryHookResult = ReturnType<typeof useCollegeStudentsQuery>;
+export type CollegeStudentsLazyQueryHookResult = ReturnType<typeof useCollegeStudentsLazyQuery>;
+export type CollegeStudentsQueryResult = Apollo.QueryResult<CollegeStudentsQuery, CollegeStudentsQueryVariables>;
 export const CollegesDocument = gql`
-  query Colleges {
-    colleges {
-      _id
-      name
-      createdBy
-    }
+    query Colleges {
+  colleges {
+    _id
+    name
+    createdBy
   }
-`;
+}
+    `;
 
 /**
  * __useCollegesQuery__
@@ -594,46 +560,25 @@ export const CollegesDocument = gql`
  *   },
  * });
  */
-export function useCollegesQuery(
-  baseOptions?: Apollo.QueryHookOptions<CollegesQuery, CollegesQueryVariables>
-) {
-  return Apollo.useQuery<CollegesQuery, CollegesQueryVariables>(
-    CollegesDocument,
-    baseOptions
-  );
-}
-export function useCollegesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    CollegesQuery,
-    CollegesQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<CollegesQuery, CollegesQueryVariables>(
-    CollegesDocument,
-    baseOptions
-  );
-}
+export function useCollegesQuery(baseOptions?: Apollo.QueryHookOptions<CollegesQuery, CollegesQueryVariables>) {
+        return Apollo.useQuery<CollegesQuery, CollegesQueryVariables>(CollegesDocument, baseOptions);
+      }
+export function useCollegesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CollegesQuery, CollegesQueryVariables>) {
+          return Apollo.useLazyQuery<CollegesQuery, CollegesQueryVariables>(CollegesDocument, baseOptions);
+        }
 export type CollegesQueryHookResult = ReturnType<typeof useCollegesQuery>;
-export type CollegesLazyQueryHookResult = ReturnType<
-  typeof useCollegesLazyQuery
->;
-export type CollegesQueryResult = Apollo.QueryResult<
-  CollegesQuery,
-  CollegesQueryVariables
->;
+export type CollegesLazyQueryHookResult = ReturnType<typeof useCollegesLazyQuery>;
+export type CollegesQueryResult = Apollo.QueryResult<CollegesQuery, CollegesQueryVariables>;
 export const CreateBranchDocument = gql`
-  mutation CreateBranch($branch: BranchDTO!, $collegeId: ObjectId!) {
-    createBranch(branch: $branch, collegeId: $collegeId) {
-      _id
-      name
-      collegeId
-    }
+    mutation CreateBranch($branch: BranchDTO!, $collegeId: ObjectId!) {
+  createBranch(branch: $branch, collegeId: $collegeId) {
+    _id
+    name
+    collegeId
   }
-`;
-export type CreateBranchMutationFn = Apollo.MutationFunction<
-  CreateBranchMutation,
-  CreateBranchMutationVariables
->;
+}
+    `;
+export type CreateBranchMutationFn = Apollo.MutationFunction<CreateBranchMutation, CreateBranchMutationVariables>;
 
 /**
  * __useCreateBranchMutation__
@@ -653,38 +598,22 @@ export type CreateBranchMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useCreateBranchMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    CreateBranchMutation,
-    CreateBranchMutationVariables
-  >
-) {
-  return Apollo.useMutation<
-    CreateBranchMutation,
-    CreateBranchMutationVariables
-  >(CreateBranchDocument, baseOptions);
-}
-export type CreateBranchMutationHookResult = ReturnType<
-  typeof useCreateBranchMutation
->;
+export function useCreateBranchMutation(baseOptions?: Apollo.MutationHookOptions<CreateBranchMutation, CreateBranchMutationVariables>) {
+        return Apollo.useMutation<CreateBranchMutation, CreateBranchMutationVariables>(CreateBranchDocument, baseOptions);
+      }
+export type CreateBranchMutationHookResult = ReturnType<typeof useCreateBranchMutation>;
 export type CreateBranchMutationResult = Apollo.MutationResult<CreateBranchMutation>;
-export type CreateBranchMutationOptions = Apollo.BaseMutationOptions<
-  CreateBranchMutation,
-  CreateBranchMutationVariables
->;
+export type CreateBranchMutationOptions = Apollo.BaseMutationOptions<CreateBranchMutation, CreateBranchMutationVariables>;
 export const CreateCollegeDocument = gql`
-  mutation CreateCollege($college: CollegeDTO!) {
-    createCollege(college: $college) {
-      _id
-      name
-      createdBy
-    }
+    mutation CreateCollege($college: CollegeDTO!) {
+  createCollege(college: $college) {
+    _id
+    name
+    createdBy
   }
-`;
-export type CreateCollegeMutationFn = Apollo.MutationFunction<
-  CreateCollegeMutation,
-  CreateCollegeMutationVariables
->;
+}
+    `;
+export type CreateCollegeMutationFn = Apollo.MutationFunction<CreateCollegeMutation, CreateCollegeMutationVariables>;
 
 /**
  * __useCreateCollegeMutation__
@@ -703,39 +632,23 @@ export type CreateCollegeMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useCreateCollegeMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    CreateCollegeMutation,
-    CreateCollegeMutationVariables
-  >
-) {
-  return Apollo.useMutation<
-    CreateCollegeMutation,
-    CreateCollegeMutationVariables
-  >(CreateCollegeDocument, baseOptions);
-}
-export type CreateCollegeMutationHookResult = ReturnType<
-  typeof useCreateCollegeMutation
->;
+export function useCreateCollegeMutation(baseOptions?: Apollo.MutationHookOptions<CreateCollegeMutation, CreateCollegeMutationVariables>) {
+        return Apollo.useMutation<CreateCollegeMutation, CreateCollegeMutationVariables>(CreateCollegeDocument, baseOptions);
+      }
+export type CreateCollegeMutationHookResult = ReturnType<typeof useCreateCollegeMutation>;
 export type CreateCollegeMutationResult = Apollo.MutationResult<CreateCollegeMutation>;
-export type CreateCollegeMutationOptions = Apollo.BaseMutationOptions<
-  CreateCollegeMutation,
-  CreateCollegeMutationVariables
->;
+export type CreateCollegeMutationOptions = Apollo.BaseMutationOptions<CreateCollegeMutation, CreateCollegeMutationVariables>;
 export const CreateStudentDocument = gql`
-  mutation CreateStudent($student: StudentDTO!, $collegeId: ObjectId!) {
-    createStudent(student: $student, collegeId: $collegeId) {
-      _id
-      firstName
-      lastName
-      collegeId
-    }
+    mutation CreateStudent($student: StudentDTO!, $collegeId: ObjectId!) {
+  createStudent(student: $student, collegeId: $collegeId) {
+    _id
+    firstName
+    lastName
+    collegeId
   }
-`;
-export type CreateStudentMutationFn = Apollo.MutationFunction<
-  CreateStudentMutation,
-  CreateStudentMutationVariables
->;
+}
+    `;
+export type CreateStudentMutationFn = Apollo.MutationFunction<CreateStudentMutation, CreateStudentMutationVariables>;
 
 /**
  * __useCreateStudentMutation__
@@ -755,30 +668,17 @@ export type CreateStudentMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useCreateStudentMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    CreateStudentMutation,
-    CreateStudentMutationVariables
-  >
-) {
-  return Apollo.useMutation<
-    CreateStudentMutation,
-    CreateStudentMutationVariables
-  >(CreateStudentDocument, baseOptions);
-}
-export type CreateStudentMutationHookResult = ReturnType<
-  typeof useCreateStudentMutation
->;
+export function useCreateStudentMutation(baseOptions?: Apollo.MutationHookOptions<CreateStudentMutation, CreateStudentMutationVariables>) {
+        return Apollo.useMutation<CreateStudentMutation, CreateStudentMutationVariables>(CreateStudentDocument, baseOptions);
+      }
+export type CreateStudentMutationHookResult = ReturnType<typeof useCreateStudentMutation>;
 export type CreateStudentMutationResult = Apollo.MutationResult<CreateStudentMutation>;
-export type CreateStudentMutationOptions = Apollo.BaseMutationOptions<
-  CreateStudentMutation,
-  CreateStudentMutationVariables
->;
+export type CreateStudentMutationOptions = Apollo.BaseMutationOptions<CreateStudentMutation, CreateStudentMutationVariables>;
 export const HelloDocument = gql`
-  query Hello {
-    hello
-  }
-`;
+    query Hello {
+  hello
+}
+    `;
 
 /**
  * __useHelloQuery__
@@ -795,39 +695,23 @@ export const HelloDocument = gql`
  *   },
  * });
  */
-export function useHelloQuery(
-  baseOptions?: Apollo.QueryHookOptions<HelloQuery, HelloQueryVariables>
-) {
-  return Apollo.useQuery<HelloQuery, HelloQueryVariables>(
-    HelloDocument,
-    baseOptions
-  );
-}
-export function useHelloLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<HelloQuery, HelloQueryVariables>
-) {
-  return Apollo.useLazyQuery<HelloQuery, HelloQueryVariables>(
-    HelloDocument,
-    baseOptions
-  );
-}
+export function useHelloQuery(baseOptions?: Apollo.QueryHookOptions<HelloQuery, HelloQueryVariables>) {
+        return Apollo.useQuery<HelloQuery, HelloQueryVariables>(HelloDocument, baseOptions);
+      }
+export function useHelloLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HelloQuery, HelloQueryVariables>) {
+          return Apollo.useLazyQuery<HelloQuery, HelloQueryVariables>(HelloDocument, baseOptions);
+        }
 export type HelloQueryHookResult = ReturnType<typeof useHelloQuery>;
 export type HelloLazyQueryHookResult = ReturnType<typeof useHelloLazyQuery>;
-export type HelloQueryResult = Apollo.QueryResult<
-  HelloQuery,
-  HelloQueryVariables
->;
+export type HelloQueryResult = Apollo.QueryResult<HelloQuery, HelloQueryVariables>;
 export const LoginDocument = gql`
-  mutation Login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      accessToken
-    }
+    mutation Login($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    accessToken
   }
-`;
-export type LoginMutationFn = Apollo.MutationFunction<
-  LoginMutation,
-  LoginMutationVariables
->;
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
 /**
  * __useLoginMutation__
@@ -847,32 +731,18 @@ export type LoginMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useLoginMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    LoginMutation,
-    LoginMutationVariables
-  >
-) {
-  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(
-    LoginDocument,
-    baseOptions
-  );
-}
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, baseOptions);
+      }
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
-export type LoginMutationOptions = Apollo.BaseMutationOptions<
-  LoginMutation,
-  LoginMutationVariables
->;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const LogoutDocument = gql`
-  mutation Logout {
-    logout
-  }
-`;
-export type LogoutMutationFn = Apollo.MutationFunction<
-  LogoutMutation,
-  LogoutMutationVariables
->;
+    mutation Logout {
+  logout
+}
+    `;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
 
 /**
  * __useLogoutMutation__
@@ -890,28 +760,17 @@ export type LogoutMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useLogoutMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    LogoutMutation,
-    LogoutMutationVariables
-  >
-) {
-  return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(
-    LogoutDocument,
-    baseOptions
-  );
-}
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, baseOptions);
+      }
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
-export type LogoutMutationOptions = Apollo.BaseMutationOptions<
-  LogoutMutation,
-  LogoutMutationVariables
->;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const MyInfoDocument = gql`
-  query MyInfo {
-    myInfo
-  }
-`;
+    query MyInfo {
+  myInfo
+}
+    `;
 
 /**
  * __useMyInfoQuery__
@@ -928,37 +787,21 @@ export const MyInfoDocument = gql`
  *   },
  * });
  */
-export function useMyInfoQuery(
-  baseOptions?: Apollo.QueryHookOptions<MyInfoQuery, MyInfoQueryVariables>
-) {
-  return Apollo.useQuery<MyInfoQuery, MyInfoQueryVariables>(
-    MyInfoDocument,
-    baseOptions
-  );
-}
-export function useMyInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<MyInfoQuery, MyInfoQueryVariables>
-) {
-  return Apollo.useLazyQuery<MyInfoQuery, MyInfoQueryVariables>(
-    MyInfoDocument,
-    baseOptions
-  );
-}
+export function useMyInfoQuery(baseOptions?: Apollo.QueryHookOptions<MyInfoQuery, MyInfoQueryVariables>) {
+        return Apollo.useQuery<MyInfoQuery, MyInfoQueryVariables>(MyInfoDocument, baseOptions);
+      }
+export function useMyInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyInfoQuery, MyInfoQueryVariables>) {
+          return Apollo.useLazyQuery<MyInfoQuery, MyInfoQueryVariables>(MyInfoDocument, baseOptions);
+        }
 export type MyInfoQueryHookResult = ReturnType<typeof useMyInfoQuery>;
 export type MyInfoLazyQueryHookResult = ReturnType<typeof useMyInfoLazyQuery>;
-export type MyInfoQueryResult = Apollo.QueryResult<
-  MyInfoQuery,
-  MyInfoQueryVariables
->;
+export type MyInfoQueryResult = Apollo.QueryResult<MyInfoQuery, MyInfoQueryVariables>;
 export const RegisterDocument = gql`
-  mutation Register($username: String!, $password: String!) {
-    register(username: $username, password: $password)
-  }
-`;
-export type RegisterMutationFn = Apollo.MutationFunction<
-  RegisterMutation,
-  RegisterMutationVariables
->;
+    mutation Register($username: String!, $password: String!) {
+  register(username: $username, password: $password)
+}
+    `;
+export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
 
 /**
  * __useRegisterMutation__
@@ -978,36 +821,26 @@ export type RegisterMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useRegisterMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    RegisterMutation,
-    RegisterMutationVariables
-  >
-) {
-  return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(
-    RegisterDocument,
-    baseOptions
-  );
-}
+export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<RegisterMutation, RegisterMutationVariables>) {
+        return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, baseOptions);
+      }
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
-export type RegisterMutationOptions = Apollo.BaseMutationOptions<
-  RegisterMutation,
-  RegisterMutationVariables
->;
+export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const StudentsDocument = gql`
-  query Students {
-    students {
+    query Students {
+  students {
+    _id
+    firstName
+    lastName
+    fullName
+    college {
       _id
-      firstName
-      lastName
-      college {
-        _id
-        name
-      }
+      name
     }
   }
-`;
+}
+    `;
 
 /**
  * __useStudentsQuery__
@@ -1024,30 +857,12 @@ export const StudentsDocument = gql`
  *   },
  * });
  */
-export function useStudentsQuery(
-  baseOptions?: Apollo.QueryHookOptions<StudentsQuery, StudentsQueryVariables>
-) {
-  return Apollo.useQuery<StudentsQuery, StudentsQueryVariables>(
-    StudentsDocument,
-    baseOptions
-  );
-}
-export function useStudentsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    StudentsQuery,
-    StudentsQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<StudentsQuery, StudentsQueryVariables>(
-    StudentsDocument,
-    baseOptions
-  );
-}
+export function useStudentsQuery(baseOptions?: Apollo.QueryHookOptions<StudentsQuery, StudentsQueryVariables>) {
+        return Apollo.useQuery<StudentsQuery, StudentsQueryVariables>(StudentsDocument, baseOptions);
+      }
+export function useStudentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StudentsQuery, StudentsQueryVariables>) {
+          return Apollo.useLazyQuery<StudentsQuery, StudentsQueryVariables>(StudentsDocument, baseOptions);
+        }
 export type StudentsQueryHookResult = ReturnType<typeof useStudentsQuery>;
-export type StudentsLazyQueryHookResult = ReturnType<
-  typeof useStudentsLazyQuery
->;
-export type StudentsQueryResult = Apollo.QueryResult<
-  StudentsQuery,
-  StudentsQueryVariables
->;
+export type StudentsLazyQueryHookResult = ReturnType<typeof useStudentsLazyQuery>;
+export type StudentsQueryResult = Apollo.QueryResult<StudentsQuery, StudentsQueryVariables>;

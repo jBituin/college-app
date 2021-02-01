@@ -41,8 +41,12 @@ const Register: React.FC<RouteComponentProps> = ({ history }) => {
         console.log('errors:', response);
       }
     } catch (error) {
+      let message = 'Something went wrong. Please try again';
+      if (JSON.stringify(error).includes('E11000')) {
+        message = 'Username already exists.';
+      }
       toast({
-        title: 'Something went wrong. Please try again',
+        title: message,
         status: 'error',
         duration: 2000,
         isClosable: true,
