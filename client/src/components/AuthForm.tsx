@@ -7,7 +7,6 @@ import {
   FormLabel,
   Input,
   Button,
-  Text,
 } from '@chakra-ui/react';
 
 interface Props {
@@ -35,14 +34,14 @@ const AuthForm: React.FC<Props> = (props) => {
     <Flex width="full" height="full" align="center" justifyContent="center">
       <Box
         p={8}
-        minWidth="500px"
-        minHeight="500px"
-        maxHeight="500px"
+        minWidth="300px"
+        minHeight="400px"
+        maxHeight="300px"
         borderWidth={1}
         borderRadius={8}
         boxShadow="large"
       >
-        <Box textAlign="center">
+        <Box textAlign="center" mb={5}>
           <Heading>{headingText}</Heading>
         </Box>
         <Box my={4} textAlign="left">
@@ -62,11 +61,12 @@ const AuthForm: React.FC<Props> = (props) => {
             </FormControl>
             <Button
               width="full"
-              mt={4}
+              mt={16}
               type="submit"
               variant="outline"
               color="teal"
               borderColor="teal"
+              alignSelf="end"
             >
               {buttonText}
             </Button>

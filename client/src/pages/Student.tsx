@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Flex, Box, Heading, useToast, Button, Input } from '@chakra-ui/react';
+import { Flex, Box, Heading, useToast, Button } from '@chakra-ui/react';
 import {
   useBranchesQuery,
   useCollegesQuery,
   useStudentsQuery,
   useCreateStudentMutation,
-  useCollegeBranchesQuery,
   useAssignStudentMutation,
 } from '../generated/graphql';
 import Listing from '../components/Listing';

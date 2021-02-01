@@ -18,7 +18,14 @@ function resolve(path: string, obj: {}, separator = '.') {
 
 const Listing: React.FC<Props> = ({ data, dataKeys, headers, onRowClick }) => {
   return (
-    <Table variant="simple" m={8}>
+    <Table
+      variant="simple"
+      my={8}
+      maxHeight="300px"
+      maxH="300px"
+      height="300px"
+      overflow="auto"
+    >
       <Thead>
         <Tr>
           {headers.map((header) => (

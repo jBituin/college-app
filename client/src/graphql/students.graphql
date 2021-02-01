@@ -3,6 +3,7 @@ query Students {
     _id
     firstName
     lastName
+    fullName
     college {
       _id
       name
