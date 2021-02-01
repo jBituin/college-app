@@ -14,8 +14,8 @@ const College: React.FC = () => {
   const [createCollege] = useCreateCollegeMutation();
   const toast = useToast();
 
-  const onNameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.currentTarget.value);
+  const onNameChangeHandler = (value: string) => {
+    setName(value);
   };
 
   const inputFields = [
@@ -104,7 +104,7 @@ const College: React.FC = () => {
         minWidth="500px"
       >
         <Box textAlign="center">
-          <Heading color="teal">Manage College</Heading>
+          <Heading color="teal">Colleges</Heading>
         </Box>
         {getChildComponent()}
         <Flex align="center" justifyContent="center">
