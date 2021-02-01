@@ -1,0 +1,31 @@
+version: '3'
+services:
+  react-app:
+    image: react-app
+    stdin_open: true
+    ports:
+      - '3000:3000'
+    networks:
+      - college-app
+  api-server:
+    image: api-server
+    ports:
+      - '4000:4000'
+    networks:
+      - college-app
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:3.6.19-xenial
+    ports:
+      - '27017:27017'
+    networks:
+      - college-app
+    volumes:
+      - mongo-data:/data/db
+networks:
+  college-app:
+    driver: bridge
+volumes:
+  mongo-data:
+    driver: local
